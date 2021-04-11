@@ -1,0 +1,18 @@
+[package]
+name = "telegram-token-faucet"
+version = "0.1.0"
+authors = ["Dengjianping <djptux@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+log = "0.4.14"
+pretty_env_logger = "0.4.0"
+sled = "0.34"
+sp-core = "3.0.0"
+sp-runtime = "3.0.0"
+subxt = { version = "0.15", package = "substrate-subxt" }
+toml = "0.5"
+teloxide = { version = "0.4", features = ["auto-send", "macros"] }
+thiserror = "1.0"
+tokio = { version =  "1.4", features = ["rt-multi-thread", "macros"] }
