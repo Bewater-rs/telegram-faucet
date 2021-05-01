@@ -3,7 +3,7 @@ use subxt::{
     PairSigner, DefaultNodeRuntime, Client,
     system::AccountStoreExt, balances,
 };
-use sp_core::{sr25519::Pair, Pair as TraitPair};
+use sp_core::{sr25519::Pair, Pair as TraitPair, crypto::Ss58Codec};
 use std::error::Error;
 use sp_runtime::AccountId32;
 use std::convert::From;
@@ -28,31 +28,16 @@ pub async fn balances_transfer(signer: &str, url: &str, to: &AccountId32, amount
     Ok(trx_id.to_string())
 }
 
-#[allow(dead_code)]
-pub async fn create_balances_transfer_call<'b, F: 'b>(
-    to: &'b AccountId32,
-    amount: u128,
-    f: F
-) -> balances::TransferCall<'b, DefaultNodeRuntime> 
-    where for<'a> F: Fn(&'a AccountId32, u128) -> balances::TransferCall<'a, DefaultNodeRuntime> {
-    f(to, amount)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[test]
-    fn tets_call() {
-        let alice = AccountId32::default();
-        let f = |to: &AccountId32, amount: u128| {
-            let call = balances::TransferCall::<DefaultNodeRuntime> {
-                to: &to.clone().into(),
-                amount
-            };
-            call
-        };
-
-        let calls = create_balances_transfer_call(&alice, 1, f);
+    #[tokio::test]
+    async fn tets_balances_call() {
+        let signer = "//Alice";
+        let bob = AccountId32::from_string("5Gf3M6b4hy6D7QdGwaKGv1AteiuLzpPw4XVo9FmuHZbDG6qn").expect("invalid adress");
+        let url = "ws://127.0.0.:9944";
+        let r = balances_transfer(signer, url, &bob, 1000000000u128).await;
+        dbg!(r);
     }
 }

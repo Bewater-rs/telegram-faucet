@@ -6,6 +6,7 @@ bot_name = ""
 signer = ["//Alice", "//Bob"]
 node_urls = ["ws://127.0.0.1:9944"]
 amount = 20
+precision = 12
 times = 2
 watch = false
 db_path = "~/bot/"
