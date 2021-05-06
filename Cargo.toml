@@ -15,4 +15,4 @@ subxt = { version = "0.15", package = "substrate-subxt" }
 toml = "0.5"
 teloxide = { version = "0.4", features = ["auto-send", "macros"] }
 thiserror = "1.0"
-tokio = { version =  "1.4", features = ["rt-multi-thread", "macros"] }
+tokio = { version =  "1.5", features = ["rt-multi-thread", "macros"] }
