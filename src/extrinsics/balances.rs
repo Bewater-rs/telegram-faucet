@@ -1,12 +1,9 @@
 use crate::errors::BotError;
 use subxt::{
-    PairSigner, DefaultNodeRuntime, Client,
-    system::AccountStoreExt, balances,
+    PairSigner, DefaultNodeRuntime, Client, balances,
 };
 use sp_core::{sr25519::Pair, Pair as TraitPair, crypto::Ss58Codec};
-use std::error::Error;
 use sp_runtime::AccountId32;
-use std::convert::From;
 
 #[allow(dead_code)]
 pub async fn balances_transfer(signer: &str, url: &str, to: &AccountId32, amount: u128) -> Result<String, BotError> {
@@ -16,7 +13,7 @@ pub async fn balances_transfer(signer: &str, url: &str, to: &AccountId32, amount
         .build().await?;
 
     let signer = Pair::from_string(signer.as_ref(), None).map_err(|_| BotError::NoSigner)?;
-    let mut signer = PairSigner::<DefaultNodeRuntime, Pair>::new(signer);
+    let signer = PairSigner::<DefaultNodeRuntime, Pair>::new(signer);
 
     let call = balances::TransferCall {
         to: &to.clone().into(),
@@ -36,8 +33,8 @@ mod tests {
     async fn tets_balances_call() {
         let signer = "//Alice";
         let bob = AccountId32::from_string("5Gf3M6b4hy6D7QdGwaKGv1AteiuLzpPw4XVo9FmuHZbDG6qn").expect("invalid adress");
-        let url = "ws://127.0.0.:9944";
-        let r = balances_transfer(signer, url, &bob, 1000000000u128).await;
-        dbg!(r);
+        let url = "ws://127.0.0.1:9944";
+        let result = balances_transfer(signer, url, &bob, 100_000_000_000u128).await;
+        assert!(result.is_ok());
     }
 }

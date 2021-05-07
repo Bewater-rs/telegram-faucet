@@ -1,6 +1,7 @@
 [telegram]
 token = "123456789:blablabla"
 bot_name = ""
+db_path = ""
 
 [node]
 signer = ["//Alice", "//Bob"]

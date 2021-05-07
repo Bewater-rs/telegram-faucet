@@ -125,3 +125,54 @@ pub struct BatchInterruptedEvent<T: Utility> {
 	pub error: DispatchError,
 	pub _runtime: PhantomData<T>,
 }
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use subxt::{
+		PairSigner, DefaultNodeRuntime, Client, balances
+	};
+	use sp_runtime::AccountId32;
+	use sp_core::{sr25519::Pair, Pair as TraitPair, crypto::Ss58Codec};
+
+	#[tokio::test]
+	async fn batch_balances_tranfer_calls_should_work() {
+		let signer = "//Alice";
+		let signer = Pair::from_string(signer.as_ref(), None).expect("failed to create singer.");
+		let mut signer = PairSigner::<DefaultNodeRuntime, Pair>::new(signer);
+
+        let bob = AccountId32::from_string("5Gf3M6b4hy6D7QdGwaKGv1AteiuLzpPw4XVo9FmuHZbDG6qn").expect("invalid adress");
+        let url = "ws://127.0.0.1:9944";
+
+		let client: Client<DefaultNodeRuntime> = subxt::ClientBuilder::new()
+			.set_url(url)
+			.skip_type_sizes_check()
+			.build()
+			.await
+			.expect("failed to create node client.");
+
+		let calls = vec![
+				balances::TransferCall {
+					to: &bob.clone().into(),
+					amount: 3000_000_000_000u128
+				},
+				balances::TransferCall {
+					to: &bob.clone().into(),
+					amount: 1000_000_000_000u128
+				},
+			]
+			.into_iter()
+			.map(|call| 
+				Encoded(client.encode(call.clone()).expect("failed to create a call.").0)
+			).collect::<_>();
+
+		let handler = UtilityPallet {
+			client: Rc::new(client),
+			signer: Some(signer),
+			watch: true,
+		};
+
+		let result = handler.batch(calls).await;
+		assert!(result.is_ok());
+	}
+}
