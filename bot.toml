@@ -4,10 +4,8 @@ bot_name = ""
 db_path = ""
 
 [node]
-signer = ["//Alice", "//Bob"]
-node_urls = ["ws://127.0.0.1:9944"]
+seed = "//Alice"
+node_urls = "ws://120.79.25.151:9944"
 amount = 20
 precision = 12
-times = 2
 watch = false
-db_path = "~/bot/"

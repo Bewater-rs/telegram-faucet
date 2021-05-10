@@ -86,11 +86,23 @@ impl UtilityPallet {
 
 		Ok(hash.to_string())
 	}
+
+	// pub fn batch_calls<T: Utility>(
+	// 	&self,
+	// 	calls: Vec<T::Call>,
+	// ) -> Vec<Encoded> where T::Call: Encode {
+	// 	let calls = calls.into_iter().map(|call| 
+	// 			Encoded(self.client.encode(call).expect("failed to create a call.").0)
+	// 		)
+	// 		.collect::<_>();
+		
+	// 	calls
+	// }
 }
 
 #[subxt::module]
 pub trait Utility: System {
-	type Call:  Debug + Encode + Decode + Sync + Send;
+	type Call:  Debug + Encode + Clone + Decode + Sync + Send;
 }
 
 impl Utility for DefaultNodeRuntime {
@@ -125,6 +137,22 @@ pub struct BatchInterruptedEvent<T: Utility> {
 	pub error: DispatchError,
 	pub _runtime: PhantomData<T>,
 }
+
+// pub fn batch_calls<T>(
+// 	calls: Vec<T::Call>,
+// 	client: &Client<T>
+// ) -> Vec<Encoded> 
+// 	where 
+// 		T: Utility,
+// 		T::Call: subxt::Call<T>
+// {
+// 	let calls = calls.into_iter().map(|call| 
+// 			Encoded(client.encode(call).expect("failed to create a call.").0)
+// 		)
+// 		.collect::<_>();
+	
+// 	calls
+// }
 
 #[cfg(test)]
 mod tests {

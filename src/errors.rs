@@ -1,4 +1,5 @@
 use thiserror::Error;
+use crate::db::TelegramAccount;
 
 #[derive(Error, Debug)]
 pub enum BotError {
@@ -14,6 +15,12 @@ pub enum BotError {
     DecodeEventError(#[from] codec::Error),
     #[error("No event found.")]
     NoEventFound,
+    #[error("Sled Db Error `{0}.")]
+    SledDbError(#[from] sled::Error),
     #[error("Unknown error happened.")]
-    UnknownError
+    UnknownError,
+    #[error("`{0}` has reached their daily quota. Only request once per day.")]
+    ReachQuota(TelegramAccount),
+    #[error("There's error on bot configuration.")]
+    ErrorBotConfig,
 }
